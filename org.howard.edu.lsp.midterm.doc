@@ -1,1 +1,61 @@
 
+
+// File: org/howard/edu/lsp/midterm/question2/Main.java
+package org.howard.edu.lsp.midterm.question2;
+
+public class Main {
+  public static void main(String[] args) {
+    System.out.println("Circle radius 3.0 → area = " + AreaCalculator.area(3.0));
+    System.out.println("Rectangle 5.0 x 2.0 → area = " + AreaCalculator.area(5.0, 2.0));
+    System.out.println("Triangle base 10, height 6 → area = " + AreaCalculator.area(10, 6));
+    System.out.println("Square side 4 → area = " + AreaCalculator.area(4));
+
+    // Example causing exception
+    try {
+      System.out.println("Circle radius -2.0 → area = " + AreaCalculator.area(-2.0));
+    } catch (IllegalArgumentException e) {
+      System.out.println("Error: " + e.getMessage());
+    }
+  }
+}
+
+/*
+Reflection:
+Using overloaded methods for 'area' is cleaner and easier to read than creating separate methods
+like circleArea() or rectangleArea(). Overloading lets us use the same method name to represent
+a shared idea—calculating area—while differing by parameter types, which keeps the design simple,
+consistent, and more intuitive.
+*/
+
+// File: org/howard/edu/lsp/midterm/question4/Camera.java
+package org.howard.edu.lsp.midterm.question4;
+
+public class Camera extends Device implements Networked, BatteryPowered {
+  private int batteryPercent;
+
+  public Camera(String id, String location, int initialBattery) {
+    super(id, location);
+    setBatteryPercent(initialBattery);
+  }
+
+  // Networked
+  @Override public void connect()    { setConnected(true);  }
+  @Override public void disconnect() { setConnected(false); }
+  @Override public boolean isConnected() { return super.isConnected(); }
+
+  // BatteryPowered
+  @Override public int getBatteryPercent() { return batteryPercent; }
+  @Override public void setBatteryPercent(int percent) {
+    if (percent < 0 || percent > 100) throw new IllegalArgumentException("battery 0..100");
+    this.batteryPercent = percent;
+  }
+
+  // Status
+  @Override public String getStatus() {
+    String connStatus = isConnected() ? "up" : "down";
+    return "Camera[id=" + getId() + ", loc=" + getLocation() +
+           ", conn=" + connStatus + ", batt=" + batteryPercent + "%]";
+  }
+}
+
+
