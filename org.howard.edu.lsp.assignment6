@@ -1,1 +1,203 @@
+package org.howard.edu.lsp.assignment6;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * A mutable mathematical set of {@code Integer} values.
+ * <p>
+ * This class does not allow duplicate elements and supports
+ * standard set operations such as union, intersection,
+ * difference, and complement. All mutator methods modify
+ * the current instance ({@code this}).
+ */
+public class IntegerSet  {
+    /**
+     * Internal representation of the set.
+     * Duplicates are never stored.
+     */
+    private List<Integer> set = new ArrayList<Integer>();
+
+    /**
+     * Clears the internal representation of the set.
+     * After calling this method, the set will be empty.
+     */
+    public void clear() {
+        set.clear();
+    }
+
+    /**
+     * Returns the number of elements in the set.
+     *
+     * @return the size of this set
+     */
+    public int length() {
+        return set.size();
+    }
+
+    /**
+     * Returns {@code true} if this set is equal to the specified object.
+     * Two {@code IntegerSet} instances are considered equal if they contain
+     * exactly the same integer values in any order (no duplicates).
+     *
+     * @param o the object to compare with
+     * @return {@code true} if the sets contain the same elements,
+     *         {@code false} otherwise
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof IntegerSet)) {
+            return false;
+        }
+        IntegerSet other = (IntegerSet) o;
+        // Same size and each contains all elements of the other
+        if (this.set.size() != other.set.size()) {
+            return false;
+        }
+        // No duplicates allowed, so containsAll in one direction is enough
+        return this.set.containsAll(other.set);
+    }
+
+    /**
+     * Returns {@code true} if the set contains the specified value.
+     *
+     * @param value the integer to check for
+     * @return {@code true} if {@code value} is in the set,
+     *         {@code false} otherwise
+     */
+    public boolean contains(int value) {
+        return set.contains(value);
+    }
+
+    /**
+     * Returns the largest element in the set.
+     *
+     * @return the maximum value in the set
+     * @throws IllegalStateException if the set is empty
+     */
+    public int largest() {
+        if (set.isEmpty()) {
+            throw new IllegalStateException("Cannot determine largest element of an empty set.");
+        }
+        return Collections.max(set);
+    }
+
+    /**
+     * Returns the smallest element in the set.
+     *
+     * @return the minimum value in the set
+     * @throws IllegalStateException if the set is empty
+     */
+    public int smallest() {
+        if (set.isEmpty()) {
+            throw new IllegalStateException("Cannot determine smallest element of an empty set.");
+        }
+        return Collections.min(set);
+    }
+
+    /**
+     * Adds the specified item to the set if it is not already present.
+     * If the item is already in the set, this method does nothing.
+     *
+     * @param item the integer to add
+     */
+    public void add(int item) {
+        if (!set.contains(item)) {
+            set.add(item);
+        }
+    }
+
+    /**
+     * Removes the specified item from the set if it is present.
+     * If the item is not in the set, this method does nothing.
+     *
+     * @param item the integer to remove
+     */
+    public void remove(int item) {
+        // Use Integer.valueOf to ensure remove by value, not by index
+        set.remove(Integer.valueOf(item));
+    }
+
+    /**
+     * Performs the union of this set with another set.
+     * After this call, this set contains all unique elements that are
+     * in either this set or {@code other}.
+     *
+     * @param other the other set whose elements are to be added
+     */
+    public void union(IntegerSet other) {
+        for (Integer value : other.set) {
+            if (!this.set.contains(value)) {
+                this.set.add(value);
+            }
+        }
+    }
+
+    /**
+     * Performs the intersection of this set with another set.
+     * After this call, this set contains only elements that are
+     * present in both sets.
+     *
+     * @param other the other set to intersect with
+     */
+    public void intersect(IntegerSet other) {
+        set.retainAll(other.set);
+    }
+
+    /**
+     * Performs the set difference (this \ other).
+     * After this call, this set contains only elements that are in this set
+     * and not in {@code other}.
+     *
+     * @param other the other set whose elements are to be removed
+     */
+    public void diff(IntegerSet other) {
+        set.removeAll(other.set);
+    }
+
+    /**
+     * Performs the set complement operation: (other \ this).
+     * After this call, this set contains elements that are in {@code other}
+     * but not in this set's original contents.
+     *
+     * @param other the universal or reference set
+     */
+    public void complement(IntegerSet other) {
+        List<Integer> result = new ArrayList<Integer>();
+        // Use original contents of this.set during computation;
+        // do not modify this.set until after the loop.
+        for (Integer value : other.set) {
+            if (!this.set.contains(value)) {
+                result.add(value);
+            }
+        }
+        this.set.clear();
+        this.set.addAll(result);
+    }
+
+    /**
+     * Returns {@code true} if the set is empty.
+     *
+     * @return {@code true} if the set contains no elements,
+     *         {@code false} otherwise
+     */
+    public boolean isEmpty() {
+        return set.isEmpty();
+    }
+
+    /**
+     * Returns a string representation of the set.
+     * The format matches the {@code List.toString()} style, e.g.
+     * {@code []} for an empty set or {@code [1, 2, 3]}.
+     *
+     * @return a string representation of this set
+     */
+    @Override
+    public String toString() {
+        return set.toString();
+    }
+}
